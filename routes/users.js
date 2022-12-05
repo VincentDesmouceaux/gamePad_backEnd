@@ -54,3 +54,28 @@ router.post("/user/signup", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
+router.post("/user/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(405).json({ message: "Unauthorized" });
+  }
+
+  const user = await User.findOne({ email: email });
+
+  const newHash = SHA256(user.salt + password).toString(encBase64);
+  if (newHash === user.hash) {
+    res.json({
+      _id: user._id,
+      token: user.token,
+
+      username: user.account.username,
+    });
+    console.log("On peut se connecter");
+  } else {
+    console.log("Unauthorized");
+    res.status(405).json({ message: "Unauthorized" });
+  }
+});
+module.exports = router;
