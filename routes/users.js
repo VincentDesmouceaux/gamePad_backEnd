@@ -8,22 +8,20 @@ const User = require("../models/User");
 
 router.post("/user/signup", async (req, res) => {
   const { username, email, password } = req.body;
-
+  console.log(req.body);
   try {
     const isMailExistInDb = await User.findOne({ email: email });
 
     if (isMailExistInDb !== null) {
       return res.status(400).json({ message: "mail déja existant !" });
     }
-
+    if (!email) {
+      return res.status(403).json({ message: "le mail n'est pas renseigné" });
+    }
     if (!username) {
       return res
         .status(402)
         .json({ message: "le username n'est pas renseigné" });
-    }
-
-    if (!email) {
-      return res.status(403).json({ message: "le mail n'est pas renseigné" });
     }
 
     const salt = uid2(16);
@@ -48,7 +46,7 @@ router.post("/user/signup", async (req, res) => {
       _id: newUser._id,
       token: newUser.token,
 
-      username: newUser.account.username,
+      username: newUser.username,
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -57,8 +55,13 @@ router.post("/user/signup", async (req, res) => {
 
 router.post("/user/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
 
-  if (!email || !password) {
+  if (!email) {
+    return res.status(403).json({ message: "le mail n'est pas renseigné" });
+  }
+
+  if (!email || !password || salt === null) {
     return res.status(405).json({ message: "Unauthorized" });
   }
 
@@ -70,7 +73,7 @@ router.post("/user/login", async (req, res) => {
       _id: user._id,
       token: user.token,
 
-      username: user.account.username,
+      username: user.username,
     });
     console.log("On peut se connecter");
   } else {
