@@ -10,9 +10,10 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI);
-
+const gameRoutes = require("./routes/game");
 const userRoutes = require("./routes/users");
 app.use(userRoutes);
+app.use(gameRoutes);
 
 app.all("*", (req, res) => {
   res.status(404).json({ message: "This route doesn't exist" });

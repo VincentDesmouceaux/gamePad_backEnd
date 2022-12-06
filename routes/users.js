@@ -61,7 +61,7 @@ router.post("/user/login", async (req, res) => {
     return res.status(403).json({ message: "le mail n'est pas renseigné" });
   }
 
-  if (!email || !password || salt === null) {
+  if (!email || !password) {
     return res.status(405).json({ message: "Unauthorized" });
   }
 
