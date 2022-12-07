@@ -4,14 +4,18 @@ const router = express.Router();
 
 router.get("/games", async (req, res) => {
   try {
-    let { search } = req.query;
+    let { search, ordering } = req.query;
 
     if (!search) {
       search = "";
     }
 
+    if (!ordering) {
+      ordering = "";
+    }
+
     const response = await axios.get(
-      `https://api.rawg.io/api/games?name=${search}&key=${process.env.API_KEY}`,
+      `https://api.rawg.io/api/games?search=${search}&ordering=${ordering}&key=${process.env.API_KEY}`,
       {
         headers: { "accept-encoding": "*" },
       }

@@ -12,6 +12,8 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI);
 const gameRoutes = require("./routes/game");
 const userRoutes = require("./routes/users");
+const mygamesRoutes = require("./routes/mygames");
+app.use(mygamesRoutes);
 app.use(userRoutes);
 app.use(gameRoutes);
 
